@@ -1,0 +1,15 @@
+const express=require('express')
+require('dotenv').config()
+const app=express()
+const route=require('./route')
+const errorHandler=require('./middleware/errorHandler')
+const mongoose = require('mongoose')
+app.use(express.json())
+app.use(express.urlencoded({extended:false}))
+app.use('/api',route)
+app.use(errorHandler)
+mongoose.connect(process.env.DB_LINK);
+const db=mongoose.connection;
+db.on('error',()=>console.log('db connection error'))
+db.once('open',()=>console.log('db is connected'))
+app.listen(process.env.PORT,()=>console.log('server is running',process.env.PORT))
